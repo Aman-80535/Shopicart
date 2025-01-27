@@ -35,7 +35,6 @@ export const Home = () => {
 			console.log("lllllll", searckKey)
 			const filtered = products.filter((item) =>
 				item.title.toLowerCase().includes(searckKey.toLowerCase()) ||
-				item.title.toLowerCase().includes(searckKey.toLowerCase()) ||
 				item.category.name.toLowerCase().includes(searckKey.toLowerCase())
 			);
 			setFilteredData(filtered);

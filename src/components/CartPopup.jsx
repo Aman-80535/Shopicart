@@ -6,31 +6,32 @@ import { decrementQuantity, incrementQuantity, removeFromCart } from "../redux/c
 const CartPopup = ({ setIsOpen, isOpen, togglePopup }) => {
   const dispatch = useDispatch();
   const { items } = useSelector((state) => state.cart);
+  const { userData } = useSelector((state) => state.user);
   const closePopup = () => setIsOpen(false);
 
   const handleDecrement = async (itemID) => {
-    try{
+    try {
       await dispatch(decrementQuantity(itemID))
-    }
-    catch(error){
+    } 
+    catch (error) {
       console.log(error.message)
     }
   }
 
   const handleIncrement = async (itemID) => {
-    try{
+    try {
       await dispatch(incrementQuantity(itemID))
     }
-    catch(error){
+    catch (error) {
       console.log(error.message)
     }
   }
 
   const removeItemFromCart = async (itemID) => {
-    try{
+    try {
       await dispatch(removeFromCart(itemID))
     }
-    catch(error){
+    catch (error) {
       console.log(error.message)
     }
   }
@@ -45,39 +46,61 @@ const CartPopup = ({ setIsOpen, isOpen, togglePopup }) => {
             onClick={(e) => e.stopPropagation()}
           >
             <h4>Your Cart</h4>
-            {items.map((item) => (
-              <div style={{ padding: "0px 0px 18px" }}>
+            {userData ? (
+              <>
+                {items.map((item) => (
+                  <div key={item?.id} style={{ padding: "0px 0px 18px" }}>
+                    <hr />
+                    <div>
+                      <img
+                        src={item?.images?.[0]}
+                        alt=""
+                        width="50px"
+                        height="70px"
+                        className="float-start"
+                      />
+                    </div>
+                    <p>{item.title}</p>
+                    <div>
+                      <button
+                        style={{ float: "right", color: "black" }}
+                        onClick={() => removeItemFromCart(item.id)}
+                      >
+                        X
+                      </button>
+                      <p>${item.price}</p>
+                    </div>
+
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: "8px",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <button
+                        style={{ background: "#ce88a8" }}
+                        onClick={() => handleDecrement(item.id)}
+                      >
+                        -
+                      </button>
+                      <button style={{ background: "grey" }}>{item.quantity}</button>
+                      <button onClick={() => handleIncrement(item.id)}>+</button>
+                    </div>
+                  </div>
+                ))}
                 <hr />
-                <div key={item?.id}>
-                  <img src={item?.images?.[0]} alt="" width="50px" height="70px" className="float-start" />
-                </div>
-                <p>{item.title}</p>
-                <div>
-                  <button style={{float: "right", textColor: "black"}} onClick={() =>removeItemFromCart(item.id)}>X</button>
-                  <p> ${item.price}</p>
-                </div>
+                <p>
+                  Total: $
+                  {items.reduce((total, item) => total + item.quantity * item.price, 0)}
+                </p>
+              </>
+            ) : (
+              <div>Please Login...</div>
+            )}
 
 
-                <div style={{
-                  display: "flex",
-                  gap: "8px",
-                  justifyContent: "center"
-                }}>
-                  <button style={{ background: "#ce88a8" }} onClick={() =>handleDecrement(item.id)}>-</button>
-                  <button style={{ background: "grey" }}>{item.quantity}</button>
-                  <button onClick={() => handleIncrement(item.id)}>+</button>
-                </div>
-              </div>
-            ))}
 
-            <hr />
-            <p>
-              Total: $
-              {items.reduce(
-                (total, item) => total + item.quantity * item.price,
-                0
-              )}
-            </p>
             <button onClick={togglePopup}>Close</button>
 
           </div>
