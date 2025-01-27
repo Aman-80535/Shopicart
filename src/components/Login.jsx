@@ -2,11 +2,14 @@ import { signInWithEmailAndPassword, getAuth } from "firebase/auth";
 import React, { useState } from "react";
 import { app } from "../firebase";
 import { useNavigate } from "react-router-dom";
+import { fetchCart } from "../redux/cart/cartAction";
+import { useDispatch } from "react-redux";
 
 
 const auth = getAuth(app);
 
 export const LogIn = () => {
+  const dispatch = useDispatch();
   const navigate= useNavigate();
 
   const [formData, setFormData] = useState({
@@ -36,6 +39,7 @@ export const LogIn = () => {
       localStorage.setItem("userToken", idToken);
 
       alert("Login successful!");
+      const cartData = dispatch(fetchCart()); 
       navigate("/")
     } catch (error) {
       setError(error.message);
